@@ -1,4 +1,5 @@
 import re
+import subprocess
 
 # 从pubspec.yaml文件中读取版本号，格式为x.x.x+x
 with open('pubspec.yaml', 'r') as file:
@@ -22,3 +23,5 @@ print('buildNumber: ' + str(oldBuildNumber) + ' -> ' + str(buildNumber))
 filedata = filedata.replace(f'version: ' + oldVersion, 'version: ' + newVersion)
 with open('pubspec.yaml', 'w') as file:
     file.write(filedata)
+
+subprocess.run(["git","tag","-a", {newVersion}, "-m", {newVersion}])
