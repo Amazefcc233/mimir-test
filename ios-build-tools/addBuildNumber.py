@@ -24,4 +24,4 @@ filedata = filedata.replace(f'version: ' + oldVersion, 'version: ' + newVersion)
 with open('pubspec.yaml', 'w') as file:
     file.write(filedata)
 
-subprocess.run(["git","tag","-a", {newVersion}, "-m", {newVersion}])
+subprocess.run(["git","tag","-a", f"v{newVersion}", "-m", f"'v{newVersion}'"])
