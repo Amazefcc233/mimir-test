@@ -24,4 +24,9 @@ filedata = filedata.replace(f'version: ' + oldVersion, 'version: ' + newVersion)
 with open('pubspec.yaml', 'w') as file:
     file.write(filedata)
 
-subprocess.run(["git","tag","-a", f"v{newVersion}", "-m", f"'v{newVersion}'"])
+cmd = f'git add .'
+subprocess.run(cmd, shell=True)
+cmd = f'git commit -m "build: {newVersion}"'
+subprocess.run(cmd, shell=True)
+cmd = f'git tag -a v{newVersion} -m "v{newVersion}]"'
+subprocess.run(cmd, shell=True)
