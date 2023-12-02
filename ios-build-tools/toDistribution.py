@@ -12,7 +12,7 @@ filedata = filedata.replace('CODE_SIGN_STYLE = Automatic;', 'CODE_SIGN_STYLE = M
 filedata = filedata.replace('DEVELOPMENT_TEAM = "";', 'DEVELOPMENT_TEAM = "M5APZD5CKA";')
 
 # PROVISIONING_PROFILE_SPECIFIER所在行进行替换更改，变为PROVISIONING_PROFILE_SPECIFIER = "Distribution-appstore-actiontest";
-filedata = filedata.replace('PROVISIONING_PROFILE_SPECIFIER = "";', 'PROVISIONING_PROFILE_SPECIFIER = "SITLifeDistributionAppStore";')
+filedata = filedata.replace('PROVISIONING_PROFILE_SPECIFIER = "";', 'PROVISIONING_PROFILE_SPECIFIER = "SITLife-Distribution-AppStore";')
 
 # 文件替换完成后，写回到文件中
 with open('ios/Runner.xcodeproj/project.pbxproj', 'w') as file:
