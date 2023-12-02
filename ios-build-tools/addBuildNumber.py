@@ -40,5 +40,5 @@ if len(sys.argv) != 1:
     run_id = sys.argv[3]
     # {{ github.run_attempt }} SHOULD BE 1
     run_attempt = sys.argv[4]
-    cmd = f'git tag -a v{newVersion} -m "v{newVersion}\n{run_id}\n{server_url}/{repository}/actions/runs/{run_id}\nrun_attempt(should be 1): {run_attempt}"'
+    cmd = f'git tag -a v{newVersion} -m "v{newVersion}\nrun id: {run_id}\nrun_attempt(should be 1): {run_attempt}\n{server_url}/{repository}/actions/runs/{run_id}"'
     subprocess.run(cmd, shell=True)
