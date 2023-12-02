@@ -47,16 +47,13 @@ jobs:
       - name: Rename APK file
         run: |
           cd build/app/outputs/flutter-apk/
-          ls .
-          mv app-armeabi-v7a-release-signed.apk SITLife-armeabi-v7a-release-signed.apk
-          mv app-arm64-v8a-release-signed.apk SITLife-arm64-v8a-release-signed.apk
-          mv app-x86_64-release-signed.apk SITLife-x86_64-release-signed.apk
+          mv app-release-signed.apk SITLife-release-signed.apk
 
-      - name: Publish android-x86_64 Artifact
+      - name: Publish Android Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: SITLife-x86_64-release
-          path: build/app/outputs/flutter-apk/SITLife-x86_64-release-signed.apk
+          name: SITLife-Android-release
+          path: build/app/outputs/flutter-apk/SITLife-release-signed.apk
 
   build_ios:
     runs-on: macos-latest
@@ -146,7 +143,7 @@ jobs:
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          python3 ./ios-build-tools/addBuildNumber.py
+          python3 ./ios-build-tools/addBuildNumber.py ${{ github.server_url }} ${{ github.repository }} ${{ github.run_id }} ${{ github.run_attempt }}
       
       - name: Push changes
         uses: ad-m/github-push-action@master

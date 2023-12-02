@@ -1,5 +1,6 @@
 import re
 import subprocess
+import sys
 
 # 从pubspec.yaml文件中读取版本号，格式为x.x.x+x
 with open('pubspec.yaml', 'r') as file:
@@ -28,5 +29,16 @@ cmd = f'git add .'
 subprocess.run(cmd, shell=True)
 cmd = f'git commit -m "build: {newVersion}"'
 subprocess.run(cmd, shell=True)
-cmd = f'git tag -a v{newVersion} -m "v{newVersion}]"'
-subprocess.run(cmd, shell=True)
+
+# 接收参数，如果传值参数无输入，则跳过
+if len(sys.argv) != 1:
+    # {{ github.server_url }}
+    server_url = sys.argv[1]
+    # {{ github.repository }}
+    repository = sys.argv[2]
+    # {{ github.run_id }}
+    run_id = sys.argv[3]
+    # {{ github.run_attempt }} SHOULD BE 1
+    run_attempt = sys.argv[4]
+    cmd = f'git tag -a v{newVersion} -m "v{newVersion}\n{run_id}\n{server_url}/{repository}/actions/runs/{run_id}\nrun_attempt(should be 1): {run_attempt}"'
+    subprocess.run(cmd, shell=True)
