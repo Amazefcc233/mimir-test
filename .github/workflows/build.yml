@@ -47,6 +47,12 @@ jobs:
           cd build/app/outputs/flutter-apk/
           mv app-release-signed.apk SITLife-release-signed.apk
       
+      - name: Delete cache builds
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh cache delete build-apk
+        
       - name: Cache APK
         id: cache-apk
         uses: actions/cache@v3
@@ -55,6 +61,7 @@ jobs:
             build/app/outputs/flutter-apk/
           key: build-apk
           enableCrossOsArchive: true
+          
           restore-keys: |
             build-apk
       
@@ -172,9 +179,9 @@ jobs:
       - name: Get Git info
         id: get_git_info
         run: |
-          git fetch --tags --sort=-committerdate
-          echo "RESOLVED_VERSION="$(git tag | head -n 1) >> "$GITHUB_OUTPUT"
-          echo "PREVIOUS_TAG="$(git tag | head -n 2 | tail -n 1) >> "$GITHUB_OUTPUT"          
+          git fetch --tags
+          echo "RESOLVED_VERSION="$(git tag --sort=-v:refname | head -n 1) >> "$GITHUB_OUTPUT"
+          echo "PREVIOUS_TAG="$(git tag --sort=-v:refname | head -n 2 | tail -n 1) >> "$GITHUB_OUTPUT"          
 
       - name: Restore cache builds(apk)
         uses: actions/cache@v3
