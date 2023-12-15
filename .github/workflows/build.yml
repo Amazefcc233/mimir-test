@@ -169,14 +169,16 @@ jobs:
         with:
           path: |
             ~/builds/
-          key: build-apk-
+          key: build-apk
+          enableCrossOsArchive: true
       
       - name: Restore cache builds(ipa)
         uses: actions/cache/restore@v3
         with:
           path: |
             ~/builds/
-          key: build-ipa-
+          key: build-ipa
+          enableCrossOsArchive: true
 
       - name: Release
         uses: softprops/action-gh-release@v1
