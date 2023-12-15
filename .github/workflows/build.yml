@@ -163,48 +163,63 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           python3 ./ios-build-tools/addBuildNumber.py ${{ github.server_url }} ${{ github.repository }} ${{ github.run_id }} ${{ github.run_attempt }}
-          echo "tag_name="$(git tag | head -n 1) >> "$GITHUB_OUTPUT"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           branch: ${{ github.ref }}
-          
+      
+      - name: Get Git info
+        id: get_git_info
+        run: |
+          git fetch --tags
+          echo "RESOLVED_VERSION="$(git tag | head -n 1) >> "$GITHUB_OUTPUT"
+          echo "PREVIOUS_TAG="$(git tag | head -n 2 | tail -n 1) >> "$GITHUB_OUTPUT"
+
+      - name: Prepare to restore
+        run: |
+          mkdir -p ~/builds/
+
       - name: Restore cache builds(apk)
         uses: actions/cache@v3
         with:
           path: |
-            ~/builds/
+            build/app/outputs/flutter-apk/
           key: build-apk
           enableCrossOsArchive: true
+
       
       - name: Restore cache builds(ipa)
         uses: actions/cache@v3
         with:
           path: |
-            ~/builds/
+            build-output/ios/   
           key: build-ipa
           enableCrossOsArchive: true
       
       - name: ls
         run: |
           ls ~/builds/
-          echo ${{ steps.get_tag_name.outputs.tag_name }}
+          echo '...'
           ls ~/
+          cp -r build/app/outputs/flutter-apk/SITLife-release-signed.apk ~/builds/
+          cp -r build-output/ios/life.mysit.SITLife.ipa ~/builds/
         # run: |
         #   mkdir -p ~/builds/
         #   cp -r build/app/outputs/flutter-apk/SITLife-release-signed.apk ~/builds/
         #   cp -r build-output/ios/life.mysit.SITLife.ipa ~/builds/
+        
       - name: Release
         uses: softprops/action-gh-release@v1
         # env 取出先前步骤设定的 tag_name
         env:
-          tag_name: ${{ steps.get_tag_name.outputs.tag_name }}
+            RESOLVED_VERSION: ${{ steps.get_git_info.outputs.RESOLVED_VERSION }}
+            PREVIOUS_TAG: ${{ steps.get_git_info.outputs.PREVIOUS_TAG }}
         with:
           files: |
             ~/builds/*.apk
             ~/builds/*.ipa
-          tag_name: ${{ env.tag_name }}
+          tag_name: ${{ env.RESOLVED_VERSION }}
           body: |
               ## 更新内容
               ### 新增功能
@@ -214,7 +229,7 @@ jobs:
               ### 修复内容
                 - 修复了一些bug
               
-              完整更新日志: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+              完整更新日志: https://github.com/${{ github.repository }}/compare/${{ env.PREVIOUS_TAG }}...${{ env.RESOLVED_VERSION }}
           draft: true
           prerelease: false
     
