@@ -158,7 +158,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           python3 ./ios-build-tools/addBuildNumber.py ${{ github.server_url }} ${{ github.repository }} ${{ github.run_id }} ${{ github.run_attempt }}
-          echo "git tag | head -n 1={value}" >> "$env.tag_name"
+          echo "tag_name="$(git tag | head -n 1) >> "$GITHUB_OUTPUT"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
