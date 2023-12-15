@@ -50,6 +50,7 @@ jobs:
       - name: Delete cache builds
         env:
           GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
         run: |
           gh cache delete build-apk
         
@@ -131,6 +132,13 @@ jobs:
         xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
     # Debug only
+    - name: Delete cache builds
+      env:
+        GH_TOKEN: ${{ github.token }}
+      continue-on-error: true
+      run: |
+        gh cache delete build-ipa
+    
     - name: cache ipa
       id: cache-ipa
       uses: actions/cache@v3
