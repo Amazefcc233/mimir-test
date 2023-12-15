@@ -190,7 +190,7 @@ jobs:
           files: |
             ~/builds/*.apk
             ~/builds/*.ipa
-          tag_name: git tag | head -n 1
+          tag_name: ${{ env.tag_name }}
           body: '这里是body123123'
           draft: true
           prerelease: false
