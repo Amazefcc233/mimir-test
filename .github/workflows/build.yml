@@ -174,11 +174,7 @@ jobs:
         run: |
           git fetch --tags
           echo "RESOLVED_VERSION="$(git tag | head -n 1) >> "$GITHUB_OUTPUT"
-          echo "PREVIOUS_TAG="$(git tag | head -n 2 | tail -n 1) >> "$GITHUB_OUTPUT"
-
-      - name: Prepare to restore
-        run: |
-          mkdir -p ~/builds/
+          echo "PREVIOUS_TAG="$(git tag | head -n 2 | tail -n 1) >> "$GITHUB_OUTPUT"          
 
       - name: Restore cache builds(apk)
         uses: actions/cache@v3
@@ -193,22 +189,10 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            build-output/ios/   
+            build-output/ios/
           key: build-ipa
           enableCrossOsArchive: true
-      
-      - name: ls
-        run: |
-          ls ~/builds/
-          echo '...'
-          ls ~/
-          cp -r build/app/outputs/flutter-apk/SITLife-release-signed.apk ~/builds/
-          cp -r build-output/ios/life.mysit.SITLife.ipa ~/builds/
-        # run: |
-        #   mkdir -p ~/builds/
-        #   cp -r build/app/outputs/flutter-apk/SITLife-release-signed.apk ~/builds/
-        #   cp -r build-output/ios/life.mysit.SITLife.ipa ~/builds/
-        
+
       - name: Release
         uses: softprops/action-gh-release@v1
         # env 取出先前步骤设定的 tag_name
@@ -217,8 +201,8 @@ jobs:
             PREVIOUS_TAG: ${{ steps.get_git_info.outputs.PREVIOUS_TAG }}
         with:
           files: |
-            ~/builds/*.apk
-            ~/builds/*.ipa
+            build/app/outputs/flutter-apk/SITLife-release-signed.apk
+            build-output/ios/life.mysit.SITLife.ipa
           tag_name: ${{ env.RESOLVED_VERSION }}
           body: |
               ## 更新内容
@@ -233,9 +217,9 @@ jobs:
           draft: true
           prerelease: false
     
-      - name: Delete cache builds
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh cache delete build-apk
-          gh cache delete build-ipa
+    #   - name: Delete cache builds
+    #     env:
+    #       GH_TOKEN: ${{ github.token }}
+    #     run: |
+    #       gh cache delete build-apk
+    #       gh cache delete build-ipa
