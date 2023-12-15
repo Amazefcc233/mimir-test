@@ -37,7 +37,7 @@ jobs:
           draft: true
           prerelease: false
     
-      - name: Delete cache builds
-        run:
-            gh cache delete build-apk-*
-            gh cache delete build-ipa-*
+      # - name: Delete cache builds
+      #   run:
+      #       gh cache delete build-apk-*
+      #       gh cache delete build-ipa-*
