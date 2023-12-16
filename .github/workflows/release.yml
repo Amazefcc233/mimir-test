@@ -1,43 +1,84 @@
-name: push release
+name: Release new version
 
-on: push
+on:
+  release:
+    types: [released]
+
 permissions:
-  contents: write
+  contents: read
+  packages: write
 
 jobs:
-  build:
-    if: startsWith(github.ref, 'refs/tags/')
+  example-Build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Restore docs cache
+        uses: actions/cache@v1
+        with:
+          path: ~/deploy
+          key: cache-deploy
 
-      - name: Restore cache builds(apk)
-        uses: actions/cache/restore@v3
-        with:
-          path: |
-            ~/builds/
-          key: build-apk-
-      
-      - name: Restore cache builds(ipa)
-        uses: actions/cache/restore@v3
-        with:
-          path: |
-            ~/builds/
-          key: build-ipa-
+      - name: Pull docs
+        shell: bash
+        run: |
+          if [ -d ~/deploy ]; then
+            cd ~/deploy
+            git fetch origin
+            git add --all
+            git reset --hard origin/docs
+          else
+            git clone --single-branch --branch docs "https://github.com/${{ github.repository }}.git" ~/deploy
+          fi
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            ~/builds/*.apk
-            ~/builds/*.ipa
-          tag_name: ${{ github.ref }}
-          body: '这里是body'
-          draft: true
-          prerelease: false
-    
-      # - name: Delete cache builds
-      #   run:
-      #       gh cache delete build-apk-*
-      #       gh cache delete build-ipa-*
+      - name: Deploy
+        shell: bash
+        run: |
+          # 从release中获取版本号
+          version=$(echo "${{ github.event.release.tag_name }}" | sed 's/v//g')
+          apk_name=$(echo "${{ github.event.release.assets[0].name }}")
+          apk_url=$(echo "${{ github.event.release.assets[0].browser_download_url }}")
+          ipa_name=$(echo "${{ github.event.release.assets[1].name }}")
+          ipa_url=$(echo "${{ github.event.release.assets[1].browser_download_url }}")
+          
+          cd ~/deploy
+          
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          mkdir -p "artifact/"
+          
+          jq -n \
+            --arg version "$version" \
+            --arg apk_name "$apk_name" \
+            --arg apk_url1 "$apk_url" \
+            --arg apk_url2 "https://mirror.ghproxy.com/$apk_url" \
+            --arg ipa_name "$ipa_name" \
+            --arg ipa_url1 "$ipa_url" \
+            --arg ipa_url2 "https://mirror.ghproxy.com/$ipa_url" \
+            '
+              {
+                "version": $version,
+                "apk": {
+                  "name": $apk_name,
+                  "url": {
+                    "official": $apk_url1,
+                    "mirror": $apk_url2,
+                  },
+                },
+                "ipa": {
+                  "name": $filename,
+                  "url": {
+                    "official": $ipa_url1,
+                    "mirror": $ipa_url2,
+                  },
+                },
+              }
+            ' > "artifact/$version.json"
+          
+          rm -f artifact/latest.json
+          ln -s "$version.json" "artifact/latest.json"
+          
+          git add --all
+          git commit -m "Release New Version: $version"
+          git push origin docs
+  
