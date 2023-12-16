@@ -235,15 +235,17 @@ jobs:
                 - 其他
               
               ## 下载地址
-                <!-- Android -->
-                - `Android`: 点击下方apk文件即可下载
-                <!-- iOS -->
-                <!-- Main -->
+                <!-- Android:main -->
+                <!-- - `Android`: 点击下方apk文件即可下载 -->
+                <!-- iOS:main -->
                 <!-- - `iOS`: 请前往[`App Store`](https://apps.apple.com/cn/app/id6468989112)下载并安装 -->
-                <!-- TestFlight -->
-                - `iOS`: 请前往[`TestFlight`](https://testflight.apple.com/join/ecafeulK)下载并安装
-                <!-- Debug -->
+                <!-- iOS:TestFlight -->
+                <!-- - `iOS`: 请前往[`TestFlight`](https://testflight.apple.com/join/ecafeulK)下载并安装 -->
+                <!-- iOS:Debug -->
                 <!-- - `iOS`: 点击下方ipa文件即可下载 -->
+
+                - `Android`: 点击下方apk文件即可下载
+                - `iOS`: 请前往[`TestFlight`](https://testflight.apple.com/join/ecafeulK)下载并安装
               
               Full Changelog: https://github.com/${{ github.repository }}/compare/${{ env.PREVIOUS_TAG }}...${{ env.RESOLVED_VERSION }}
           draft: true
