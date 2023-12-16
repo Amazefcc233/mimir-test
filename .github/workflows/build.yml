@@ -208,6 +208,7 @@ jobs:
           enableCrossOsArchive: true
 
       - name: Rename files
+        continue-on-error: true
         run: |
           mv build/app/outputs/flutter-apk/SITLife-release-signed.apk build/app/outputs/flutter-apk/1-SITLife-release-signed.apk
           mv build-output/ios/life.mysit.SITLife.ipa build-output/ios/2-SITLife-release.ipa
