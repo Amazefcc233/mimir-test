@@ -139,16 +139,16 @@ jobs:
       run: |
         gh cache delete build-ipa
     
-    - name: cache ipa
-      id: cache-ipa
-      uses: actions/cache@v3
-      with:
-        path: |
-          build-output/ios/
-        key: build-ipa
-        enableCrossOsArchive: true
-        restore-keys: |
-          build-ipa
+    #- name: cache ipa
+    #  id: cache-ipa
+    #  uses: actions/cache@v3
+    #  with:
+    #    path: |
+    #      build-output/ios/
+    #    key: build-ipa
+    #    enableCrossOsArchive: true
+    #    restore-keys: |
+    #      build-ipa
 
     - name: Publish iOS Artifact
       uses: actions/upload-artifact@v3
@@ -251,6 +251,7 @@ jobs:
       - name: Delete cache builds
         env:
           GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
         run: |
           gh cache delete build-apk
           gh cache delete build-ipa
