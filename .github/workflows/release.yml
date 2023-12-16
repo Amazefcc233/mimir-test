@@ -19,7 +19,8 @@ jobs:
         shell: bash
         run: |
           version=$(echo "${{ github.event.release.tag_name }}" | sed 's/v//g')
-          release_time=$(echo "${{ github.event.release.published_at }}")
+          release_time=$(echo "${{ github.event.release.published_at }}" | sed 's/T/ /g' | sed 's/Z//g')
+          release_time=$(date -d "$release_time 8 hours" "+%Y-%m-%d %H:%M:%S")
           apk_name=$(echo "${{ github.event.release.assets[0].name }}")
           apk_url=$(echo "${{ github.event.release.assets[0].browser_download_url }}")
           ipa_name=$(echo "${{ github.event.release.assets[1].name }}")
