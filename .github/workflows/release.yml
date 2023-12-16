@@ -12,14 +12,14 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: docs
-
       - name: Deploy
         shell: bash
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
+          git clone --single-branch --branch main "https://github.com/Amazefcc233/SITLife-download" ~/deploy
+          cd ~/deploy
+
           version=$(echo "${{ github.event.release.tag_name }}" | sed 's/v//g')
           release_time=$(echo "${{ github.event.release.published_at }}" | sed 's/T/ /g' | sed 's/Z//g')
           release_time=$(date -d "$release_time 8 hours" "+%Y-%m-%d %H:%M:%S")
@@ -68,5 +68,5 @@ jobs:
           
           git add --all
           git commit -m "Release New Version: $version"
-          git push origin docs
+          git push origin main
   
