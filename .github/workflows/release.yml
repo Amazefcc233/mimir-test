@@ -19,11 +19,11 @@ jobs:
         shell: bash
         run: |
           version=$(echo "${{ github.event.release.tag_name }}" | sed 's/v//g')
+          release_time=$(echo "${{ github.event.release.published_at }}")
           apk_name=$(echo "${{ github.event.release.assets[0].name }}")
           apk_url=$(echo "${{ github.event.release.assets[0].browser_download_url }}")
           ipa_name=$(echo "${{ github.event.release.assets[1].name }}")
           ipa_url=$(echo "${{ github.event.release.assets[1].browser_download_url }}")
-          release_time=$(echo "${{ github.event.release.published_at }}")
           
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -32,6 +32,7 @@ jobs:
           
           jq -n \
             --arg version "$version" \
+            --arg release_time "$release_time" \
             --arg apk_name "$apk_name" \
             --arg apk_url1 "$apk_url" \
             --arg apk_url2 "https://mirror.ghproxy.com/$apk_url" \
