@@ -207,6 +207,11 @@ jobs:
           key: build-ipa
           enableCrossOsArchive: true
 
+      - name: Rename files
+        run: |
+          mv build/app/outputs/flutter-apk/SITLife-release-signed.apk build/app/outputs/flutter-apk/1-SITLife-release-signed.apk
+          mv build-output/ios/life.mysit.SITLife.ipa build-output/ios/2-SITLife-release.ipa
+
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
@@ -214,8 +219,8 @@ jobs:
             PREVIOUS_TAG: ${{ steps.get_git_info.outputs.PREVIOUS_TAG }}
         with:
           files: |
-            build/app/outputs/flutter-apk/SITLife-release-signed.apk
-            build-output/ios/life.mysit.SITLife.ipa
+            build/app/outputs/flutter-apk/1-SITLife-release-signed.apk
+            build-output/ios/2-SITLife-release.ipa
           tag_name: ${{ env.RESOLVED_VERSION }}
           body: |
               ## 更新内容
