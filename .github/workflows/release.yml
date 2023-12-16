@@ -2,7 +2,7 @@ name: Release new version
 
 on:
   release:
-    types: [released,published]
+    types: [released]
 
 permissions:
   contents: read
@@ -66,7 +66,7 @@ jobs:
                   },
                 },
                 "ipa": {
-                  "name": $filename,
+                  "name": $ipa_name,
                   "url": {
                     "official": $ipa_url1,
                     "mirror": $ipa_url2,
