@@ -246,8 +246,7 @@ jobs:
                 <!-- - `iOS`: 点击下方ipa文件即可下载 -->
               
               Full Changelog: https://github.com/${{ github.repository }}/compare/${{ env.PREVIOUS_TAG }}...${{ env.RESOLVED_VERSION }}
-          # draft: true
-          draft: false
+          draft: true
           prerelease: false
     
       # - name: Delete cache builds
