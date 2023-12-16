@@ -249,10 +249,10 @@ jobs:
           draft: true
           prerelease: false
     
-      - name: Delete cache builds
-        env:
-          GH_TOKEN: ${{ github.token }}
-        continue-on-error: true
-        run: |
-          gh cache delete build-apk
-          gh cache delete build-ipa
+      # - name: Delete cache builds
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   continue-on-error: true
+      #   run: |
+      #     gh cache delete build-apk
+      #     gh cache delete build-ipa

@@ -18,12 +18,12 @@ jobs:
       - name: Deploy
         shell: bash
         run: |
-          # 从release中获取版本号
           version=$(echo "${{ github.event.release.tag_name }}" | sed 's/v//g')
           apk_name=$(echo "${{ github.event.release.assets[0].name }}")
           apk_url=$(echo "${{ github.event.release.assets[0].browser_download_url }}")
           ipa_name=$(echo "${{ github.event.release.assets[1].name }}")
           ipa_url=$(echo "${{ github.event.release.assets[1].browser_download_url }}")
+          release_time=$(echo "${{ github.event.release.published_at }}")
           
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -41,6 +41,7 @@ jobs:
             '
               {
                 "version": $version,
+                "release_time": $release_time,
                 "apk": {
                   "name": $apk_name,
                   "url": {
