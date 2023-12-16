@@ -12,24 +12,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        
-      - name: Restore docs cache
-        uses: actions/cache@v1
         with:
-          path: ~/deploy
-          key: cache-deploy
-
-      - name: Pull docs
-        shell: bash
-        run: |
-          if [ -d ~/deploy ]; then
-            cd ~/deploy
-            git fetch origin
-            git add --all
-            git reset --hard origin/docs
-          else
-            git clone --single-branch --branch docs "https://github.com/${{ github.repository }}.git" ~/deploy
-          fi
+          ref: docs
 
       - name: Deploy
         shell: bash
@@ -40,8 +24,6 @@ jobs:
           apk_url=$(echo "${{ github.event.release.assets[0].browser_download_url }}")
           ipa_name=$(echo "${{ github.event.release.assets[1].name }}")
           ipa_url=$(echo "${{ github.event.release.assets[1].browser_download_url }}")
-          
-          cd ~/deploy
           
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
