@@ -1,10 +1,8 @@
 name: Release new version
 
 on:
-  # 当release被发布时触发或手动触发
   release:
     types: [published]
-  workflow_dispatch:
 
 
 permissions: 
@@ -21,17 +19,6 @@ jobs:
           key: ${{ secrets.DOCS_SSH_KEY }}
           known_hosts: ${{ secrets.DOCS_KNOWN_HOST }}
         
-      - name: Deploy
-        shell: bash
-        run: |
-          echo "${{ github.event.release.tag_name }}" | sed 's/v//g'
-          echo "${{ github.event.release.published_at }}" | sed 's/T/ /g' | sed 's/Z//g'
-          date -d "$release_time 8 hours" "+%Y-%m-%d %H:%M:%S"
-          echo "${{ github.event.release.assets[0].name }}"
-          echo "${{ github.event.release.assets[0].browser_download_url }}"
-          echo "${{ github.event.release.assets[1].name }}"
-          echo "${{ github.event.release.assets[1].browser_download_url }}"
-
       # - name: Deploy
       #   shell: bash
       #   run: |
