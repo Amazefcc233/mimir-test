@@ -259,7 +259,7 @@ jobs:
                 <!-- - `iOS`: [Join the Test Flight](https://testflight.apple.com/join/ecafeulK).-->
                 <!-- iOS:Debug -->
                 <!-- - `iOS`: Click the .ipa files below.-->
-
+                
                 - `Android`: Click the .apk files below.
                 - `iOS`: [Join the Test Flight](https://testflight.apple.com/join/ecafeulK).
 
@@ -267,16 +267,16 @@ jobs:
           draft: true
           prerelease: false
 
-      - name: Delete cache builds (apk)
-        if: steps.cache-apk.outputs.cache-hit == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh cache delete build-apk
+      # - name: Delete cache builds (apk)
+      #   if: steps.cache-apk.outputs.cache-hit == 'true'
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     gh cache delete build-apk
 
-      - name: Delete cache builds (ipa)
-        if: steps.cache-ipa.outputs.cache-hit == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh cache delete build-ipa
+      # - name: Delete cache builds (ipa)
+      #   if: steps.cache-ipa.outputs.cache-hit == 'true'
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     gh cache delete build-ipa
