@@ -79,7 +79,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: SITLife-Android-release
-          path: build/app/outputs/flutter-apk/SITLife-release-signed.apk
+          path: build/app/outputs/flutter-apk/1-SITLife-release-signed.apk
 
   build_ios:
     runs-on: macos-latest
@@ -178,7 +178,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: SITLife-iOS-release
-        path: build-output/ios
+        path: build-output/ios/2-SITLife-release.ipa
 
     # Release
     # - name: Deploy to App Store (Testflight)
@@ -215,7 +215,8 @@ jobs:
           echo "RESOLVED_VERSION="$(git tag --sort=-v:refname | head -n 1) >> "$GITHUB_OUTPUT"
           echo "PREVIOUS_TAG="$(git tag --sort=-v:refname | head -n 2 | tail -n 1) >> "$GITHUB_OUTPUT"
 
-      - name: Restore cache builds(apk)
+      - name: Restore cache builds (apk)
+        id: cache-apk
         uses: actions/cache@v3
         with:
           path: |
@@ -223,7 +224,8 @@ jobs:
           key: build-apk
           enableCrossOsArchive: true
 
-      - name: Restore cache builds(ipa)
+      - name: Restore cache builds (ipa)
+        id: cache-ipa
         uses: actions/cache@v3
         with:
           path: |
@@ -265,10 +267,16 @@ jobs:
           draft: true
           prerelease: false
 
-      - name: Delete cache builds
+      - name: Delete cache builds (apk)
+        if: steps.cache-apk.outputs.cache-hit == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        continue-on-error: true
         run: |
           gh cache delete build-apk
+
+      - name: Delete cache builds (ipa)
+        if: steps.cache-ipa.outputs.cache-hit == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
           gh cache delete build-ipa
