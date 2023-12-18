@@ -158,12 +158,12 @@ jobs:
       run: |
         xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
     
-    - name: Rename IPA file
+    - name: Rename ipa file
       run: |
         mv build-output/ios/life.mysit.SITLife.ipa build-output/ios/2-SITLife-release.ipa
 
     # Debug only
-    - name: cache ipa
+    - name: Cache ipa
       id: cache-ipa
       uses: actions/cache@v3
       with:
