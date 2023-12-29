@@ -166,35 +166,35 @@ jobs:
         mv build-output/ios/life.mysit.SITLife.ipa build-output/ios/publish/2-SITLife-release.ipa
 
     # Debug only
-    # - name: (Debug) Publish ipa file
-    #   run: |
-    #     touch build-output/ios/publish/.release
+    - name: (Debug) Publish ipa file
+      run: |
+        touch build-output/ios/publish/.release
 
-    # - name: (Debug) Cache ipa
-    #   id: cache-ipa
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: |
-    #       build-output/ios/
-    #     key: build-ipa
-    #     enableCrossOsArchive: true
-    #     restore-keys: |
-    #       build-ipa
+    - name: (Debug) Cache ipa
+      id: cache-ipa
+      uses: actions/cache@v3
+      with:
+        path: |
+          build-output/ios/
+        key: build-ipa
+        enableCrossOsArchive: true
+        restore-keys: |
+          build-ipa
 
-    # - name: (Debug) Publish iOS Artifact
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: SITLife-iOS-release
-    #     path: build-output/ios/2-SITLife-release.ipa
+    - name: (Debug) Publish iOS Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: SITLife-iOS-release
+        path: build-output/ios/2-SITLife-release.ipa
 
     # Release
-    - name: Deploy to App Store (Testflight)
-      uses: apple-actions/upload-testflight-build@v1
-      with:
-        app-path: ${{ github.workspace }}/build-output/ios/2-SITLife-release.ipa
-        issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-        api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-        api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
+    # - name: Deploy to App Store (Testflight)
+    #   uses: apple-actions/upload-testflight-build@v1
+    #   with:
+    #     app-path: ${{ github.workspace }}/build-output/ios/2-SITLife-release.ipa
+    #     issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+    #     api-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+    #     api-private-key: ${{ secrets.APP_STORE_CONNECT_API_PRIVATE_KEY }}
 
   after_build:
     runs-on: ubuntu-latest
@@ -268,6 +268,12 @@ jobs:
               ### Features
                 - Foo
               ### Bug fixes
+                - Bar
+
+              ## 更改
+              ### 新功能
+                - Foo
+              ### Bug 修复
                 - Bar
 
               ## How to download
