@@ -19,7 +19,7 @@ jobs:
           known_hosts: ${{ secrets.DOCS_KNOWN_HOST }}
 
       - name: Deploy
-        if: github.repository == 'liplum-dev/mimir'
+        # if: github.repository == 'liplum-dev/mimir'
         shell: bash
         run: |
           git clone --single-branch --branch main "https://github.com/Amazefcc233/mimir-docs" ~/deploy
@@ -32,46 +32,6 @@ jobs:
           apk_url=$(echo "${{ github.event.release.assets[0].browser_download_url }}")
           ipa_name=$(echo "${{ github.event.release.assets[1].name }}")
           ipa_url=$(echo "${{ github.event.release.assets[1].browser_download_url }}")
-          
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          mkdir -p "artifact/"
-          
-          jq -n \
-            --arg version "$version" \
-            --arg release_time "$release_time" \
-            --arg apk_name "$apk_name" \
-            --arg apk_url1 "$apk_url" \
-            --arg apk_url2 "https://mirror.ghproxy.com/$apk_url" \
-            --arg ipa_name "$ipa_name" \
-            --arg ipa_url1 "$ipa_url" \
-            --arg ipa_url2 "https://mirror.ghproxy.com/$ipa_url" \
-            '
-              {
-                "version": $version,
-                "release_time": $release_time,
-                "apk": {
-                  "name": $apk_name,
-                  "url": {
-                    "official": $apk_url1,
-                    "mirror": $apk_url2,
-                  },
-                },
-                "ipa": {
-                  "name": $ipa_name,
-                  "url": {
-                    "official": $ipa_url1,
-                    "mirror": $ipa_url2,
-                  },
-                },
-              }
-            ' > "artifact/$version.json"
-          
-          rm -f artifact/latest.json
-          ln -s "$version.json" "artifact/latest.json"
-          
-          git add --all
-          git commit -m "Release New Version: $version"
-          git push "git@github.com:Amazefcc233/mimir-docs" main:main
+          release_note=$(echo "${{ github.event.release.body }}" | sed -n '/## 更改/,/## How to download/p' | sed '1d;$d')
+          echo "$release_note"
   
