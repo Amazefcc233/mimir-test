@@ -293,8 +293,8 @@ jobs:
                 - `iOS`: [Join the Test Flight](https://testflight.apple.com/join/ecafeulK).
 
               ## Checksum
-              - `apk`: ${{ steps.builds.outputs.APK_SHA256 }}
-              - `ipa`: ${{ steps.builds.outputs.IPA_SHA256 }}
+              - `SITLife-${{ env.RESOLVED_VERSION }}.apk`: ${{ steps.builds.outputs.APK_SHA256 }}
+              - `SITLife-${{ env.RESOLVED_VERSION }}.ipa`: ${{ steps.builds.outputs.IPA_SHA256 }}
 
               Full Changelog: https://github.com/${{ github.repository }}/compare/${{ env.PREVIOUS_TAG }}...${{ env.RESOLVED_VERSION }}
           draft: true

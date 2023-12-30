@@ -21,31 +21,21 @@ jobs:
       - name: Deploy
         # if: github.repository == 'liplum-dev/mimir'
         shell: bash
-        continue-on-error: true
         run: |
           git clone --single-branch --branch main "https://github.com/Amazefcc233/mimir-docs" ~/deploy
           cd ~/deploy
 
           version=$(echo "${{ github.event.release.tag_name }}" | sed 's/v//g')
-          echo "version: $version"
           release_time=$(echo "${{ github.event.release.published_at }}" | sed 's/T/ /g' | sed 's/Z//g')
           release_time=$(date -d "$release_time 8 hours" "+%Y-%m-%d %H:%M:%S")
-          echo "release_time: $release_time"
           release_note=$(echo "${{ github.event.release.body }}" | sed -n '/## 更改/,/## How to download/p' | sed '1d;$d')
-          echo "release_note: $release_note"
           apk_name=$(echo "${{ github.event.release.assets[0].name }}")
-          echo "apk_name: $apk_name"
           apk_url=$(echo "${{ github.event.release.assets[0].browser_download_url }}")
-          echo "apk_url: $apk_url"
-          apk_sha256=$(echo "${{ github.event.release.body }}" | sed -n '/## Checksum/,/Full Changelog/p' | sed '1d;$d' | grep "apk" | awk '{print $NF}')
-          echo "apk_sha256: $apk_sha256"
+          echo "${{ github.event.release.body }}" | sed -n '/## Checksum/,/Full Changelog/p' | sed '1d;$d' | grep "$apk_name" | awk '{print $NF}'
+          apk_sha256=$(echo "${{ github.event.release.body }}" | sed -n '/## Checksum/,/Full Changelog/p' | sed '1d;$d' | grep "$apk_name" | awk '{print $NF}')
           ipa_name=$(echo "${{ github.event.release.assets[1].name }}")
-          echo "ipa_name: $ipa_name"
           ipa_url=$(echo "${{ github.event.release.assets[1].browser_download_url }}")
-          echo "ipa_url: $ipa_url"
-          ipa_sha256=$(echo "${{ github.event.release.body }}" | sed -n '/## Checksum/,/Full Changelog/p' | sed '1d;$d' | grep "ipa" | awk '{print $NF}')
-          echo "ipa_sha256: $ipa_sha256"
-
+          ipa_sha256=$(echo "${{ github.event.release.body }}" | sed -n '/## Checksum/,/Full Changelog/p' | sed '1d;$d' | grep "$ipa_name" | awk '{print $NF}')
           
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
