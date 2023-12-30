@@ -21,6 +21,7 @@ jobs:
       - name: Deploy
         # if: github.repository == 'liplum-dev/mimir'
         shell: bash
+        continue-on-error: true
         run: |
           git clone --single-branch --branch main "https://github.com/Amazefcc233/mimir-docs" ~/deploy
           cd ~/deploy
