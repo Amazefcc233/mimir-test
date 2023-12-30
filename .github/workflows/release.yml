@@ -31,8 +31,10 @@ jobs:
           release_note=$(echo "${{ github.event.release.body }}" | sed -n '/## 更改/,/## How to download/p' | sed '1d;$d')
           apk_name=$(echo "${{ github.event.release.assets[0].name }}")
           apk_url=$(echo "${{ github.event.release.assets[0].browser_download_url }}")
+          apk_sha256=$(echo "${{ github.event.release.body }}" | sed -n '/## Checksum/,/Full Changelog/p' | sed '1d;$d' | grep "$apk_name" | awk '{print $NF}')
           ipa_name=$(echo "${{ github.event.release.assets[1].name }}")
           ipa_url=$(echo "${{ github.event.release.assets[1].browser_download_url }}")
+          ipa_sha256=$(echo "${{ github.event.release.body }}" | sed -n '/## Checksum/,/Full Changelog/p' | sed '1d;$d' | grep "$ipa_name" | awk '{print $NF}')
           
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -57,6 +59,8 @@ jobs:
                 "downloads": {
                   "Android": {
                     "name": $apk_name,
+                    "default": "mirror",
+                    "sha256": $apk_sha256,
                     "url": {
                       "official": $apk_url1,
                       "mirror": $apk_url2,
@@ -64,6 +68,8 @@ jobs:
                   },
                   "iOS": {
                     "name": $ipa_name,
+                    "default": "mirror",
+                    "sha256": $ipa_sha256,
                     "url": {
                       "official": $ipa_url1,
                       "mirror": $ipa_url2,

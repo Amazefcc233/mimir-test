@@ -241,11 +241,14 @@ jobs:
           enableCrossOsArchive: true
 
       - name: Check builds
+        id: builds
         env:
           RESOLVED_VERSION: ${{ steps.get_git_info.outputs.RESOLVED_VERSION }}
         run: |
           mv build/app/outputs/flutter-apk/publish/1-SITLife-release-signed.apk build/app/outputs/flutter-apk/publish/SITLife-${{ env.RESOLVED_VERSION }}.apk
           mv build-output/ios/publish/2-SITLife-release.ipa build-output/ios/publish/SITLife-${{ env.RESOLVED_VERSION }}.ipa
+          echo "APK_SHA256="$(sha256sum build/app/outputs/flutter-apk/publish/SITLife-${{ env.RESOLVED_VERSION }}.apk | awk '{print $1}') >> "$GITHUB_OUTPUT"
+          echo "IPA_SHA256="$(sha256sum build-output/ios/publish/SITLife-${{ env.RESOLVED_VERSION }}.ipa | awk '{print $1}') >> "$GITHUB_OUTPUT"
           if [ ! -f "build/app/outputs/flutter-apk/publish/.release" ]; then
             rm -rf build/app/outputs/flutter-apk/publish/SITLife-${{ env.RESOLVED_VERSION }}.apk
           fi
@@ -289,20 +292,24 @@ jobs:
                 - `Android`: Click the .apk files below.
                 - `iOS`: [Join the Test Flight](https://testflight.apple.com/join/ecafeulK).
 
+              ## Checksum
+              - `SITLife-${{ env.RESOLVED_VERSION }}.apk`: ${{ steps.builds.outputs.APK_SHA256 }}
+              - `SITLife-${{ env.RESOLVED_VERSION }}.ipa`: ${{ steps.builds.outputs.IPA_SHA256 }}
+
               Full Changelog: https://github.com/${{ github.repository }}/compare/${{ env.PREVIOUS_TAG }}...${{ env.RESOLVED_VERSION }}
           draft: true
           prerelease: false
 
-      - name: Delete cache builds (apk)
-        if: steps.cache-apk.outputs.cache-hit == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh cache delete build-apk
+      # - name: Delete cache builds (apk)
+      #   if: steps.cache-apk.outputs.cache-hit == 'true'
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     gh cache delete build-apk
 
-      - name: Delete cache builds (ipa)
-        if: steps.cache-ipa.outputs.cache-hit == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh cache delete build-ipa
+      # - name: Delete cache builds (ipa)
+      #   if: steps.cache-ipa.outputs.cache-hit == 'true'
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     gh cache delete build-ipa
