@@ -90,16 +90,16 @@ jobs:
     - name: Checkout the code
       uses: actions/checkout@v3
 
-    # - name: Clear old cache - Cache IPA
-    #   id: clear-cache-ipa
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: |
-    #       build-output/ios/
-    #     key: build-ipa
-    #     enableCrossOsArchive: true
-    #     restore-keys: |
-    #       build-ipa
+    - name: Clear old cache - Cache IPA
+      id: clear-cache-ipa
+      uses: actions/cache@v3
+      with:
+        path: |
+          build-output/ios/
+        key: build-ipa
+        enableCrossOsArchive: true
+        restore-keys: |
+          build-ipa
 
     - name: Clear old cache - Delete cache builds
       if: steps.clear-cache-ipa.outputs.cache-hit == 'true'
@@ -171,15 +171,15 @@ jobs:
     #     touch build-output/ios/publish/.release
 
     # - name: (Debug) Cache ipa
-    #   id: cache-ipa
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: |
-    #       build-output/ios/
-    #     key: build-ipa
-    #     enableCrossOsArchive: true
-    #     restore-keys: |
-    #       build-ipa
+      # id: cache-ipa
+      # uses: actions/cache@v3
+      # with:
+      #   path: |
+      #     build-output/ios/
+      #   key: build-ipa
+      #   enableCrossOsArchive: true
+      #   restore-keys: |
+      #     build-ipa
 
     # - name: (Debug) Publish iOS Artifact
     #   uses: actions/upload-artifact@v3
@@ -209,11 +209,6 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           python3 ./build-tools/addBuildNumber.py ${{ github.server_url }} ${{ github.repository }} ${{ github.run_id }} ${{ github.run_attempt }}
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          branch: ${{ github.ref }}
 
       - name: Get Git info
         id: get_git_info
@@ -245,16 +240,32 @@ jobs:
         env:
           RESOLVED_VERSION: ${{ steps.get_git_info.outputs.RESOLVED_VERSION }}
         run: |
-          mv build/app/outputs/flutter-apk/publish/1-SITLife-release-signed.apk build/app/outputs/flutter-apk/publish/SITLife-${{ env.RESOLVED_VERSION }}.apk
-          mv build-output/ios/publish/2-SITLife-release.ipa build-output/ios/publish/SITLife-${{ env.RESOLVED_VERSION }}.ipa
-          echo "APK_SHA256="$(sha256sum build/app/outputs/flutter-apk/publish/SITLife-${{ env.RESOLVED_VERSION }}.apk | awk '{print $1}') >> "$GITHUB_OUTPUT"
-          echo "IPA_SHA256="$(sha256sum build-output/ios/publish/SITLife-${{ env.RESOLVED_VERSION }}.ipa | awk '{print $1}') >> "$GITHUB_OUTPUT"
+          # 如果apk文件存在，就重命名，并计算sha256值，否则，sha256值为空
+          if [ -f "build/app/outputs/flutter-apk/publish/1-SITLife-release-signed.apk" ]; then
+            mv build/app/outputs/flutter-apk/publish/1-SITLife-release-signed.apk build/app/outputs/flutter-apk/publish/SITLife-${{ env.RESOLVED_VERSION }}.apk
+            echo "APK_SHA256="$(sha256sum build/app/outputs/flutter-apk/publish/SITLife-${{ env.RESOLVED_VERSION }}.apk | awk '{print $1}') >> "$GITHUB_OUTPUT"
+          else
+            echo "APK_SHA256=" >> "$GITHUB_OUTPUT"
+          fi
+          # 如果ipa文件存在，就重命名，并计算sha256值，否则，sha256值为空
+          if [ -f "build-output/ios/publish/2-SITLife-release.ipa" ]; then
+            mv build-output/ios/publish/2-SITLife-release.ipa build-output/ios/publish/SITLife-${{ env.RESOLVED_VERSION }}.ipa
+            echo "IPA_SHA256="$(sha256sum build-output/ios/publish/SITLife-${{ env.RESOLVED_VERSION }}.ipa | awk '{print $1}') >> "$GITHUB_OUTPUT"
+          else
+            echo "IPA_SHA256=" >> "$GITHUB_OUTPUT"
+          fi
+
           if [ ! -f "build/app/outputs/flutter-apk/publish/.release" ]; then
             rm -rf build/app/outputs/flutter-apk/publish/SITLife-${{ env.RESOLVED_VERSION }}.apk
           fi
           if [ ! -f "build-output/ios/publish/.release" ]; then
             rm -rf build-output/ios/publish/SITLife-${{ env.RESOLVED_VERSION }}.ipa
           fi
+      
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ github.ref }}
 
       - name: Release
         uses: softprops/action-gh-release@v1
