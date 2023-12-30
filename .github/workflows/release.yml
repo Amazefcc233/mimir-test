@@ -31,10 +31,10 @@ jobs:
           release_note=$(echo "${{ github.event.release.body }}" | sed -n '/## 更改/,/## How to download/p' | sed '1d;$d')
           apk_name=$(echo "${{ github.event.release.assets[0].name }}")
           apk_url=$(echo "${{ github.event.release.assets[0].browser_download_url }}")
-          apk_sha256=$(echo "$release_note" | grep -oP '(?<=- `SITLife-).*(?=.apk`:)' | sed 's/ //g')
+          apk_sha256=$(echo "${{ github.event.release.body }}" | sed -n '/## Checksum/,/ /p' | sed '1d;$d' | awk -F ': ' '{print $2}')
           ipa_name=$(echo "${{ github.event.release.assets[1].name }}")
           ipa_url=$(echo "${{ github.event.release.assets[1].browser_download_url }}")
-          ipa_sha256=$(echo "$release_note" | grep -oP '(?<=- `SITLife-).*(?=.ipa`:)' | sed 's/ //g')
+          ipa_sha256=$(echo "${{ github.event.release.body }}" | sed -n '/## Checksum/,/ /p' | sed '1d;$d' | awk -F ': ' '{print $4}')
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
