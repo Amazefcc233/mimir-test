@@ -31,10 +31,6 @@ jobs:
           release_note=$(echo "${{ github.event.release.body }}" | sed -n '/## 更改/,/## How to download/p' | sed '1d;$d')
           apk_name=$(echo "${{ github.event.release.assets[0].name }}")
           apk_url=$(echo "${{ github.event.release.assets[0].browser_download_url }}")
-          # 取出release说明中的apk的sha256，release说明中格式如下，冒号后面的即为sha256
-          # ## Checksum
-          #     - `SITLife-${{ env.RESOLVED_VERSION }}.apk`: ${{ steps.builds.outputs.APK_SHA256 }}
-          #     - `SITLife-${{ env.RESOLVED_VERSION }}.ipa`: ${{ steps.builds.outputs.IPA_SHA256 }}
           apk_sha256=$(echo "$release_note" | grep -oP '(?<=- `SITLife-).*(?=.apk`:)' | sed 's/ //g')
           ipa_name=$(echo "${{ github.event.release.assets[1].name }}")
           ipa_url=$(echo "${{ github.event.release.assets[1].browser_download_url }}")
