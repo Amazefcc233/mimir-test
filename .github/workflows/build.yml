@@ -161,9 +161,9 @@ jobs:
         xcodebuild -exportArchive -archivePath build-output/app.xcarchive -exportPath build-output/ios -exportOptionsPlist ios/ExportOptions.plist
 
     - name: Rename ipa file
-    #   run: |
-    #     mkdir -p build-output/ios/publish/
-    #     mv build-output/ios/life.mysit.SITLife.ipa build-output/ios/publish/2-SITLife-release.ipa
+      run: |
+        mkdir -p build-output/ios/publish/
+        mv build-output/ios/life.mysit.SITLife.ipa build-output/ios/publish/2-SITLife-release.ipa
 
     # # Debug only
     # - name: (Debug) Publish ipa file
