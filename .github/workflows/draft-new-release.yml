@@ -22,7 +22,7 @@ jobs:
       
       - name: Unzip artifacts
         run: |
-          unzip new-build-artifacts/*.zip -d new-build-artifacts/
+          jar xvf new-build-artifacts/artifacts.zip -C new-build-artifacts
           rm new-build-artifacts/*.zip
 
       - name: Get Git info
