@@ -1,8 +1,6 @@
 name: Draft New Release
-on:
-  push:
-    branches:
-        - master
+on: workflow_dispatch
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,7 +8,8 @@ jobs:
       - name: Get Flutter Build Run ID
         id: get_run_id
         run: |
-          echo "::set-output name=run_id::$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/workflows/flutter_build.yml/runs | jq -r '.workflow_runs[0].id')"
+          echo $(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/workflows/flutter_build.yml/runs | jq -r '.workflow_runs[0].id') 
+          echo $(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/workflows/flutter_build.yml/runs | jq -r '.workflow_runs[0].id') >> "$GITHUB_OUTPUT"
       
       - name: Download artifacts
         uses: actions/download-artifact@v4
