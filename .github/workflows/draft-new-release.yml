@@ -15,7 +15,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           run-id: ${{ steps.get_run_id.outputs.run_id }}
-          path: new-build-artifacts
+      
+      - name: List artifacts
+        run: |
+          ls -l new-build-artifacts
       
       - name: Unzip artifacts
         run: |
