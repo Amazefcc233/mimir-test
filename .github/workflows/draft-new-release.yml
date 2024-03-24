@@ -14,7 +14,7 @@ jobs:
       - name: Download artifacts
         run: |
           mkdir new-build-artifacts
-          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[].archive_download_url' | xargs -n 1 curl -L -o new-build-artifacts/artifacts.zip
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[] | select(.name == "artifacts.zip") | .archive_download_url' | xargs -I {} curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L -o new-build-artifacts/artifacts.zip {}
       
       - name: List artifacts
         run: |
