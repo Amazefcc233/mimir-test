@@ -250,14 +250,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SITLife-Android-release
-          path: build/app/outputs/flutter-apk/publish/SITLife-${{ steps.get_git_info.outputs.RESOLVED_VERSION }}.apk
+          path: build/upload-artifacts/SITLife-${{ steps.get_git_info.outputs.RESOLVED_VERSION }}.apk
 
       # iOS
       - name: (Debug) Publish iOS Artifact
         uses: actions/upload-artifact@v4
         with:
           name: SITLife-iOS-release
-          path: build-output/ios/publish/SITLife-${{ steps.get_git_info.outputs.RESOLVED_VERSION }}.ipa
+          path: build/upload-artifacts/SITLife-${{ steps.get_git_info.outputs.RESOLVED_VERSION }}.ipa
 
       - name: Deploy to App Store (TestFlight)
         if: github.repository == 'liplum-dev/mimir'
