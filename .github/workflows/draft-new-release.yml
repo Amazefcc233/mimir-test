@@ -13,7 +13,6 @@ jobs:
       - name: Download artifacts
         run: |
           mkdir new-build-artifacts
-          # 下载构建产物，这里的 run_id 是上一步获取的。下载的artifacts可能有多个，需要全部下载，不要合并为一个文件。下载的文件保存在 new-build-artifacts 文件夹下。
           cd new-build-artifacts
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[].archive_download_url' | xargs -n 1 curl -LJO -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"
           echo $(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[].archive_download_url')
@@ -28,7 +27,7 @@ jobs:
       - name: Get Git info
         id: get_git_info
         run: |
-          echo $(ls new-build-artifacts | grep -oP 'SITLife-v\d+\.\d+\.\d+\+\d+\.\w+' | cut -d'-' -f2)
+          echo $(ls new-build-artifacts | grep -oP 'SITLife-v\d+\.\d+\.\d+\+\d+' | cut -d'-' -f2)
           echo "RESOLVED_VERSION="$(ls new-build-artifacts | grep -oP 'SITLife-v\d+\.\d+\.\d+\+\d+' | cut -d'-' -f2) >> "$GITHUB_OUTPUT"
           echo "PREVIOUS_TAG="$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name') >> "$GITHUB_OUTPUT"
       
