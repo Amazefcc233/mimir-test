@@ -31,7 +31,7 @@ jobs:
         id: get_git_info
         run: |
           echo $(ls new-build-artifacts | grep -oP 'SITLife-v\d+\.\d+\.\d+\+\d+\.\w+' | cut -d'-' -f2)
-          echo "RESOLVED_VERSION="$(ls new-build-artifacts | grep -oP 'SITLife-v\d+\.\d+\.\d+\+\d+\.\w+' | cut -d'-' -f2) >> "$GITHUB_OUTPUT"
+          echo "RESOLVED_VERSION="$(ls new-build-artifacts | grep -oP 'SITLife-v\d+\.\d+\.\d+\+\d+' | cut -d'-' -f2) >> "$GITHUB_OUTPUT"
           echo "PREVIOUS_TAG="$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name') >> "$GITHUB_OUTPUT"
       
       - name: Check builds
@@ -49,11 +49,6 @@ jobs:
           else
             echo "IPA_SHA256=- \`SITLife-${{ env.RESOLVED_VERSION }}.ipa\`: "$(sha256sum new-build-artifacts/SITLife-${{ env.RESOLVED_VERSION }}.ipa | awk '{print $1}') >> "$GITHUB_OUTPUT"
           fi
-      
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          branch: ${{ github.ref }}
 
       - name: Release
         uses: softprops/action-gh-release@v2
