@@ -22,7 +22,7 @@ jobs:
 
       - name: Unzip artifacts
         run: |
-          mkdir new-build-artifacts
+          ls -l ./
           unzip -o artifacts/*.zip -d new-build-artifacts
           ls -l new-build-artifacts
 
