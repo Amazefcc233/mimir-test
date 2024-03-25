@@ -24,12 +24,12 @@ jobs:
       - name: Unzip artifacts
         run: |
           unzip -q new-build-artifacts/artifacts.zip -d new-build-artifacts
+          ls -l new-build-artifacts
           rm new-build-artifacts/*.zip
 
       - name: Get Git info
         id: get_git_info
         run: |
-          git fetch --tags
           echo $(ls new-build-artifacts | grep -oP 'SITLife-v\d+\.\d+\.\d+\+\d+\.\w+' | cut -d'-' -f2)
           echo "RESOLVED_VERSION="$(ls new-build-artifacts | grep -oP 'SITLife-v\d+\.\d+\.\d+\+\d+\.\w+' | cut -d'-' -f2) >> "$GITHUB_OUTPUT"
           echo "PREVIOUS_TAG="$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name') >> "$GITHUB_OUTPUT"
