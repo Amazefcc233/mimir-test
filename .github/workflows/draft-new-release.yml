@@ -20,9 +20,10 @@ jobs:
 
       - name: Unzip artifacts
         run: |
-          unzip -q new-build-artifacts/artifacts.zip -d new-build-artifacts
+          # 解压合并后的 artifacts.zip 文件。直接解压会有问题，所以先解压到一个临时目录，再移动到 new-build-artifacts
+          unzip -q new-build-artifacts/artifacts.zip -d new-build-artifacts/tmp
+          mv new-build-artifacts/tmp/*/* new-build-artifacts
           ls -l new-build-artifacts
-          rm new-build-artifacts/*.zip
 
       - name: Get Git info
         id: get_git_info
