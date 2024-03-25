@@ -1,4 +1,4 @@
-name: Release new version
+name: 3.Release new version
 
 on:
   release:

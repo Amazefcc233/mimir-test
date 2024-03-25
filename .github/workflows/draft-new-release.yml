@@ -1,8 +1,8 @@
-name: Draft New Release
+name: 2.Draft New Release
 on: workflow_dispatch
 
 jobs:
-  build:
+  draft-new-release:
     runs-on: ubuntu-latest
     steps:
       - name: Get Flutter Build Run ID
