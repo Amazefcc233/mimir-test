@@ -14,7 +14,8 @@ jobs:
       - name: Download artifacts
         run: |
           mkdir new-build-artifacts
-          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[] | select(.name == "artifacts.zip") | .archive_download_url' | xargs -I {} curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L -o new-build-artifacts/artifacts.zip {}
+          # 下载构建产物，这里的 run_id 是上一步获取的。下载的artifacts可能有多个，需要全部下载
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[].archive_download_url' | xargs -I {} curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L -o new-build-artifacts/artifacts.zip {}
       
       - name: List artifacts
         run: |
@@ -22,7 +23,7 @@ jobs:
       
       - name: Unzip artifacts
         run: |
-          jar xvf new-build-artifacts/artifacts.zip -C new-build-artifacts
+          unzip -q new-build-artifacts/artifacts.zip -d new-build-artifacts
           rm new-build-artifacts/*.zip
 
       - name: Get Git info
