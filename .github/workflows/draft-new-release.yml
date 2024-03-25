@@ -8,19 +8,16 @@ jobs:
       - name: Get Flutter Build Run ID
         id: get_run_id
         run: |
-          echo $(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/workflows/build.yml/runs | jq -r '.workflow_runs[0].id')
           echo "run_id="$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/actions/workflows/build.yml/runs | jq -r '.workflow_runs[0].id') >> "$GITHUB_OUTPUT"
       
       - name: Download artifacts
         run: |
           mkdir new-build-artifacts
-          # 下载构建产物，这里的 run_id 是上一步获取的。下载的artifacts可能有多个，需要全部下载
-          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[].archive_download_url' | xargs -I {} curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L -o new-build-artifacts/artifacts.zip {}
-      
-      - name: List artifacts
-        run: |
+          # 下载构建产物，这里的 run_id 是上一步获取的。下载的artifacts可能有多个，需要全部合并下载
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[].archive_download_url' | xargs -n 1 curl -L -o new-build-artifacts/artifacts.zip
+          echo $(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[].archive_download_url')
           ls -l new-build-artifacts
-      
+
       - name: Unzip artifacts
         run: |
           unzip -q new-build-artifacts/artifacts.zip -d new-build-artifacts
