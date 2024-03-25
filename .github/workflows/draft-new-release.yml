@@ -13,9 +13,8 @@ jobs:
       - name: Download artifacts
         run: |
           mkdir new-build-artifacts
-          # 下载构建产物，这里的 run_id 是上一步获取的。下载的artifacts可能有多个，需要全部合并下载
-          i=1
-          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[].archive_download_url' | while read url; do curl -L -o "new-build-artifacts/artifact_$((i++)).zip" "$url"; done
+          # 下载构建产物，这里的 run_id 是上一步获取的。下载的artifacts可能有多个，需要全部下载，不要合并为一个文件。
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[].archive_download_url' | xargs -n 1 curl -LJO -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"
           echo $(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -L https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ steps.get_run_id.outputs.run_id }}/artifacts | jq -r '.artifacts[].archive_download_url')
           ls -l new-build-artifacts
 
