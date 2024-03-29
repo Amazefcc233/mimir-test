@@ -45,7 +45,6 @@ jobs:
           else
             echo "APK_SHA256=- \`SITLife-${{ env.RESOLVED_VERSION }}.apk\`: "$(sha256sum new-build-artifacts/SITLife-${{ env.RESOLVED_VERSION }}.apk | awk '{print $1}') >> "$GITHUB_OUTPUT"
           fi
-
           if [ ! -f "new-build-artifacts/SITLife-${{ env.RESOLVED_VERSION }}.ipa" ]; then
             echo "IPA_SHA256=" >> "$GITHUB_OUTPUT"
           else
@@ -93,7 +92,7 @@ jobs:
                 - `iOS`: [Download on the App Store](https://apps.apple.com/cn/app/id6468989112).
 
               ## Checksum (sha256)
-              ${{ steps.builds.outputs.APK_SHA256 }}
+              ${{ steps.builds.outputs.APK_SHA256 }}  
               ${{ steps.builds.outputs.IPA_SHA256 }}
 
               Full Changelog: https://github.com/${{ github.repository }}/compare/${{ env.PREVIOUS_TAG }}...${{ env.RESOLVED_VERSION }}
