@@ -171,10 +171,6 @@ jobs:
           name: SITLife-iOS-release
           path: build/
 
-      - name: Unzip iOS Artifact
-        run: |
-          unzip build/SITLife-iOS-release.zip -d build/
-
       - name: Deploy to App Store (TestFlight)
         if: github.repository == 'liplum-dev/mimir'
         uses: apple-actions/upload-testflight-build@v1
