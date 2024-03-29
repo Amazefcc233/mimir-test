@@ -137,7 +137,7 @@ jobs:
     - name: Rename ipa file
       run: |
         mkdir -p build/upload-artifacts/
-        mv build-output/ios/2-SITLife-release.ipa build/upload-artifacts/SITLife-${{ steps.get_git_info.outputs.RESOLVED_VERSION }}.ipa
+        mv build-output/ios/life.mysit.SITLife.ipa build/upload-artifacts/SITLife-${{ steps.get_git_info.outputs.RESOLVED_VERSION }}.ipa
 
     - name: Publish iOS Artifact
       uses: actions/upload-artifact@v4
