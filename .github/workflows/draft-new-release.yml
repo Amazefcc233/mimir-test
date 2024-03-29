@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       ipa-publish: 
-        description: 'Publish ipa file?'
+        description: 'Publish the ipa file'
         required: true
         default: false
         type: boolean
