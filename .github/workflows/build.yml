@@ -171,12 +171,7 @@ jobs:
           name: SITLife-iOS-release
           path: build/
 
-      - name: List files
-        run: |
-          ls -al build/
-
       - name: Deploy to App Store (TestFlight)
-        if: github.repository == 'liplum-dev/mimir'
         uses: apple-actions/upload-testflight-build@v1
         with:
           app-path: ${{ github.workspace }}/build/SITLife-${{ steps.get_git_info.outputs.RESOLVED_VERSION }}.ipa
