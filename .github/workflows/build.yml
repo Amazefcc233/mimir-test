@@ -169,6 +169,7 @@ jobs:
           echo "RESOLVED_VERSION="$(git tag --sort=-v:refname | head -n 1) >> "$GITHUB_OUTPUT"
 
       - name: Get iOS Artifact
+        if: github.repository == 'liplum-dev/mimir'
         uses: actions/download-artifact@v4
         with:
           name: SITLife-iOS-release
@@ -187,3 +188,8 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           branch: ${{ github.ref }}
+      
+      - name: Send messages to Group
+        run: |
+          # 使用get请求，向指定的url发送消息.url为secrets.gocq_sendgroupmsg_url&group_id=secrets.gocq_group_number&message=文字内容。文字内容传入时需要进行url编码
+          curl -G -d "group_id=${{ secrets.GOCQ_GROUP_NUMBER }}" -d "message=构建完成，版本号为${{ steps.get_git_info.outputs.RESOLVED_VERSION }}" ${{ secrets.GOCQ_SENDGROUPMSG_URL }}
