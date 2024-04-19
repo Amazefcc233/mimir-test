@@ -191,5 +191,4 @@ jobs:
       
       - name: Send messages to Group
         run: |
-          # 使用get请求，向指定的url发送消息.url为secrets.gocq_sendgroupmsg_url&group_id=secrets.gocq_group_number&message=文字内容。文字内容传入时需要进行url编码
-          curl -G -d "group_id=${{ secrets.GOCQ_GROUP_NUMBER }}" -d "message=构建完成，版本号为${{ steps.get_git_info.outputs.RESOLVED_VERSION }}" ${{ secrets.GOCQ_SENDGROUPMSG_URL }}
+          curl -G ${{ secrets.gocq_sendgroupmsg_url }} --data-urlencode "group_id=${{ secrets.gocq_group_number }}" --data-urlencode "message=新测试版(v${{ steps.get_git_info.outputs.RESOLVED_VERSION }})已完成构建，请通过Github Actions下载。或等待开发者操作完成后，前往群文件/TestFlight下载。"
