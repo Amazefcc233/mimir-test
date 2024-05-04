@@ -94,7 +94,7 @@ jobs:
                     "sha256": $ipa_sha256,
                     "url": {
                       "official": $ipa_url3,
-                      "github": $apk_url1,
+                      "github": $ipa_url1,
                       "mirror": $ipa_url2,
                     }
                   }
