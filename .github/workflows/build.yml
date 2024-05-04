@@ -190,6 +190,7 @@ jobs:
           branch: ${{ github.ref }}
 
       - name: Send Message to Group
+        if: github.repository == 'liplum-dev/mimir'
         continue-on-error: true
         run: |
           curl -G -s --connect-timeout 5 ${{ secrets.gocq_sendgroupmsg_url }} --data-urlencode "group_id=${{ secrets.gocq_group_number }}" --data-urlencode "message=新测试版(${{ steps.get_git_info.outputs.RESOLVED_VERSION }})已完成构建，请通过Github Actions下载。或等待开发者操作完成后，前往群文件/TestFlight下载。"
