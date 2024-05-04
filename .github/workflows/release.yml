@@ -22,7 +22,7 @@ jobs:
         if: github.repository == 'liplum-dev/mimir'
         shell: bash
         run: |
-          git clone --single-branch --branch main "https://github.com/Amazefcc233/mimir-docs" ~/deploy
+          git clone --single-branch --branch main "https://github.com/Amazefcc233/mimir-docs-test" ~/deploy
           cd ~/deploy
 
           version=$(echo "${{ github.event.release.tag_name }}" | sed 's/v//g')
@@ -48,6 +48,16 @@ jobs:
           
           mkdir -p "artifact/"
           
+          mkdir -p "artifact/latest/"
+          rm -f artifact/latest/*
+
+          if [ -n "$apk_url" ]; then
+            curl -sL "$apk_url" -o "artifact/latest/$apk_name"
+          fi
+          if [ -n "$ipa_url" ]; then
+            curl -sL "$ipa_url" -o "artifact/latest/$ipa_name"
+          fi
+
           jq -n \
             --arg version "$version" \
             --arg release_time "$release_time" \
@@ -56,10 +66,12 @@ jobs:
             --arg apk_sha256 "$apk_sha256" \
             --arg apk_url1 "$apk_url" \
             --arg apk_url2 "https://mirror.ghproxy.com/$apk_url" \
+            --arg apk_url3 "https://g.mysit.life/artifact/latest/$apk_name" \
             --arg ipa_name "$ipa_name" \
             --arg ipa_sha256 "$ipa_sha256" \
             --arg ipa_url1 "$ipa_url" \
             --arg ipa_url2 "https://mirror.ghproxy.com/$ipa_url" \
+            --arg ipa_url3 "https://g.mysit.life/artifact/latest/$ipa_name" \
             '
               {
                 "version": $version,
@@ -68,19 +80,21 @@ jobs:
                 "downloads": {
                   "Android": {
                     "name": $apk_name,
-                    "default": "mirror",
+                    "default": "official",
                     "sha256": $apk_sha256,
                     "url": {
-                      "official": $apk_url1,
+                      "official": $apk_url3,
+                      "github": $apk_url1,
                       "mirror": $apk_url2,
                     },
                   },
                   "iOS": {
                     "name": $ipa_name,
-                    "default": "mirror",
+                    "default": "official",
                     "sha256": $ipa_sha256,
                     "url": {
-                      "official": $ipa_url1,
+                      "official": $ipa_url3,
+                      "github": $apk_url1,
                       "mirror": $ipa_url2,
                     }
                   }
@@ -93,5 +107,5 @@ jobs:
           
           git add --all
           git commit -m "Release New Version: $version"
-          git push "git@github.com:Amazefcc233/mimir-docs" main:main
+          git push "git@github.com:Amazefcc233/mimir-docs-test" main:main
   
